@@ -1,0 +1,65 @@
+input: ''
+blank: '$'
+start state: start
+table:
+  start:
+    '$': {write: 'x', R: B}
+  B:
+    '$': {write: 'y', R: comma}
+  comma:
+    '$': {write: ',', L: left2}
+  left1:
+    'x': {write: 'x', L: left1}
+    'y': {write: 'y', L: left1}
+    '$': {write: '$', R: right1}
+    'a': {write: 'a', R: right1}
+    'b': {write: 'b', R: right1}
+    ',': {write: ',', L: left1}
+    
+  left2:
+    'x': {write: 'x', L: left2}
+    'y': {write: 'y', L: left2}
+    '$': {write: '$', R: right1}
+    'a': {write: 'a', R: right1}
+    'b': {write: 'b', R: right1}
+    ',': {write: ',', R: right1}  
+  right1:
+    'x': {write: 'a', R: righta}
+    'y': {write: 'b', R: rightb}
+    ',': {write: ',', R: check1}
+  righta:
+    'x': {write: 'x', R: righta}
+    'y': {write: 'y', R: righta}
+    'a': {write: 'a', R: righta}
+    'b': {write: 'b', R: righta}
+    ',': {write: ',', R: righta}
+    '$': {write: 'x', L: left1}
+    
+  rightb:
+    'x': {write: 'x', R: rightb}
+    'y': {write: 'y', R: rightb}
+    'a': {write: 'a', R: rightb}
+    'b': {write: 'b', R: rightb}
+    ',': {write: ',', R: rightb}
+    '$': {write: 'y', L: left1}  
+    
+  check1:
+    'x': {write: 'x', R: check2}
+  check2:  
+    'y': {write: 'x', R: inc}
+    'x': {write: 'x', R: check3}
+  
+  check3:
+    'x': {write: 'x', R: check3}
+    'y': {write: 'x', L: rewrite}
+    
+  rewrite:
+    'x': {write: 'y', R: pass}
+    
+  pass:
+    'x': {write: 'x', R: pass}
+    '$': {write: ',', L: left2}
+  
+  inc:
+    'x': {write: 'x', R: inc}
+    '$': {write: 'y', R: comma}
