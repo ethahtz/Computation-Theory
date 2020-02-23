@@ -1,0 +1,122 @@
+input: '11s11'
+blank: '$'
+start state: start
+table:
+  minus1:
+    '1': {write: '1', R: minus1} 
+    '0': {write: '0', R: minus1}
+    's': {write: 's', R: minus1}
+    '$': {write: '$', L: minus2}
+    'x': {write: 'x', R: minus1}
+    'y': {write: 'y', R: minus1}
+  minus2:
+    '0': {write: '1', L: minus-}
+    '1': {write: '0', L: minusd2}
+  minusd2:
+    '0': {write: '0', L: minusd2}
+    '1': {write: '1', L: minusd}
+    's': {write: 's', R: minusd3}
+  minusd3: 
+    '0': {write: '0', R: minusd3}
+    '1': {write: '1', L: minusd}
+    '$': {write: '$', L: erase}
+  minusd:
+    's': {write: 's', L: additself}
+    '0': {write: '0', L: minusd}
+    '1': {write: '1', L: minusd}
+  minus-:
+    '0': {write: '1', L: minus-}
+    '1': {write: '0', L: minusd2}
+  additself:
+    '0': {write: 'x', L: addx}
+    '1': {write: 'y', L: addy}
+    'q': {write: 'q', L: recov}
+  get:  
+    'x': {write: 'x', R: get}
+    'y': {write: 'y', R: get}
+    '1': {write: '1', R: get}
+    '0': {write: '0', R: get}
+    'q': {write: 'q', R: get2}
+  get2:  
+    '0': {write: '0', R: get2}
+    '1': {write: '1', R: get2}
+    'x': {write: 'x', L: additself}
+    'y': {write: 'y', L: additself}
+  addx:  
+    '0': {write: '0', L: addx}
+    '1': {write: '1', L: addx}
+    'q': {write: 'q', L: addx2}
+  addx2:  
+    'x': {write: 'x', L: addx2}
+    'y': {write: 'y', L: addx2}
+    '1': {write: 'y', R: get}
+    '0': {write: 'x', R: get}
+  addy:  
+    '0': {write: '0', L: addy}
+    '1': {write: '1', L: addy}
+    'q': {write: 'q', L: addy2}
+  addy2:
+    'x': {write: 'x', L: addy2} 
+    'y': {write: 'y', L: addy2}
+    '1': {write: 'x', L: addcarry} #carry
+    '0': {write: 'y', R: get}
+  addcarry:
+    '0': {write: '1', R: get}
+    '1': {write: '0', L: addcarry}
+    '$': {write: '1', R: get}
+    
+  start:   
+    '1': {write: '1', L: start}
+    '0': {write: '0', L: start}
+    '$': {write: 'q', R: replicate}
+  replicate:
+    '1': {write: '1', R: replicate} 
+    '0': {write: '0', R: replicate}
+    's': {write: 's', L: rep2}
+    'x': {write: 'x', L: rep2}
+    'y': {write: 'y', L: rep2}
+    'q': {write: 'q', R: replicate}
+  rep2: 
+    '0': {write: 'x', L: repx}
+    '1': {write: 'y', L: repy}
+    'q': {write: 'q', R: recov}
+  repx:
+    '1': {write: '1', L: repx} 
+    '0': {write: '0', L: repx}
+    'q': {write: 'q', L: repx}
+    '$': {write: '0', R: replicate}
+  repy:
+    '1': {write: '1', L: repy} 
+    '0': {write: '0', L: repy}
+    'q': {write: 'q', L: repy}
+    '$': {write: '1', R: replicate}
+    
+    
+  recov: 
+    'x': {write: 'x', L: recov}
+    'y': {write: 'y', L: recov}
+    '1': {write: '1', R: recov2}
+    '$': {write: '$', R: recov2}
+    'q': {write: 'q', L: recov}
+    '0': {write: '0', R: recov2}
+  recov2:
+    'x': {write: '0', R: recov2}
+    'y': {write: '1', R: recov2}
+    'q': {write: 'q', R: recov2}
+    's': {write: 's', R: minus1}
+    
+    
+  erase: 
+    '0': {write: '$', L: erase}
+    '1': {write: '$', L: erase}
+    's': {write: '$', L: erase}
+    'q': {write: '$', L: point}
+  
+  point:
+    '0': {write: '0', L: point}
+    '1': {write: '1', L: point}
+    '$': {write: '$', R: end}
+    
+  end:  
+  
+  
