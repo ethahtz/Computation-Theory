@@ -1,0 +1,103 @@
+input: 'abba'
+blank: '$'
+start state: right1
+table:
+  left1:
+    'a': {write: 'x', L: lefta}
+    'b': {write: 'y', L: leftb}
+    'x': {write: 'x', L: cleanleft}
+    'y': {write: 'y', L: cleanleft}
+
+  lefta:
+    'x': {write: 'x', R: right1}
+    'y': {write: 'y', R: right1}
+    'a': {write: 'a', L: lefta}
+    'b': {write: 'b', L: lefta}
+    '$': {write: '$', R: right1}
+  leftb:
+    'x': {write: 'x', R: right1}
+    'y': {write: 'y', R: right1}
+    'a': {write: 'a', L: leftb}
+    'b': {write: 'b', L: leftb}
+    '$': {write: '$', R: right1}
+  
+  right1:
+    'a': {write: 'x', R: righta}
+    'b': {write: 'y', R: rightb}
+    'x': {write: 's', R: carryx}
+    'y': {write: 's', R: carryy}
+    
+  carryx:
+    'x': {write: 'x', R: carryx}
+    'y': {write: 'x', R: carryy}
+    '$': {write: 'x', L: cc}
+  carryy:
+    'x': {write: 'y', R: carryx}
+    'y': {write: 'y', R: carryy}    
+    '$': {write: 'y', L: cc}
+    
+  righta:
+    'x': {write: 'x', L: left1}
+    'y': {write: 'y', L: left1}
+    'a': {write: 'a', R: righta}
+    'b': {write: 'b', R: righta}
+    '$': {write: '$', L: left1}
+    
+  rightb:
+    'x': {write: 'x', L: left1}
+    'y': {write: 'y', L: left1}
+    'a': {write: 'a', R: rightb}
+    'b': {write: 'b', R: rightb}
+    '$': {write: '$', L: left1}  
+
+  cc:
+    'x': {write: 'x', L: cc}
+    'y': {write: 'y', L: cc}
+    '$': {write: '$', R: check}
+    's': {write: 's', L: cc}
+    
+  check:
+    'x': {write: '$', R: checkx1}
+    'y': {write: '$', R: checky1}
+    's': {write: '$', R: check}
+    '$': {write: '1', L: end}
+    
+    
+  checkx1:
+    'x': {write: 'x', R: checkx1}
+    'y': {write: 'y', R: checkx1}
+    's': {write: 's', R: checkx2}
+    
+  checkx2:
+    's': {write: 's', R: checkx2}
+    'x': {write: 's', L: cc}
+    'y': {write: 'y', L: cleanleft}
+    
+  checky1:
+    'x': {write: 'x', R: checky1}
+    'y': {write: 'y', R: checky1}
+    's': {write: 's', R: checky2}
+    
+  checky2:
+    's': {write: 's', R: checky2}
+    'y': {write: 's', L: cc}
+    'x': {write: 'x', L: cleanleft}
+    
+  end:
+    '$': {write: '$', R: end}
+
+  cleanleft:
+    'x': {write: 'x', L: cleanleft}
+    'y': {write: 'y', L: cleanleft}
+    'a': {write: 'a', L: cleanleft}
+    'b': {write: 'b', L: cleanleft}
+    's': {write: 's', L: cleanleft}
+    '$': {write: '$', R: cleanright}
+    
+  cleanright:
+    'x': {write: '$', R: cleanright}
+    'y': {write: '$', R: cleanright}
+    'a': {write: '$', R: cleanright}
+    'b': {write: '$', R: cleanright}
+    's': {write: '$', R: cleanright}
+    '$': {write: '0', L: end}
